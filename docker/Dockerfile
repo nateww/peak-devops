@@ -6,7 +6,12 @@ FROM python:3.8-alpine
 ENV PYTHON python3.8
 
 RUN apk add --update --no-cache \
+  supervisor                    \
   uwsgi-python3
+
+# Configuration files for supervisor and uWSGI
+COPY supervisord.conf /etc/supervisord.conf
+COPY uwsgi.ini /etc/uwsgi/
 
 # Install and configure NGINX (stdout/stderr links cause request and error logs
 # to be sent to stdout/stderr instead of a logfile)
