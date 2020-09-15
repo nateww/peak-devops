@@ -8,6 +8,14 @@ ENV PYTHON python3.8
 RUN apk add --update --no-cache \
   uwsgi-python3
 
+# Install and configure NGINX (stdout/stderr links cause request and error logs
+# to be sent to stdout/stderr instead of a logfile)
+RUN apk add --update --no-cache nginx &&            \
+    ln -sf /dev/stdout /var/log/nginx/access.log && \
+    ln -sf /dev/stderr /var/log/nginx/error.log
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY flask_app.conf /etc/nginx/sites-enabled/
+
 # The python packages.  Update to use requirements.txt in the actual
 # project so devs can test things locally to match the actual builds.
 RUN pip install Flask
